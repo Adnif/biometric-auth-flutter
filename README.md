@@ -26,7 +26,7 @@ Include screenshots or gifs of your application here.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/yourproject.git
+git clone https://github.com/Adnif/biometric-auth-flutter.git
 ```
 
 2. Install the depedencies:
