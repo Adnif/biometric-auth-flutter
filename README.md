@@ -10,10 +10,6 @@ This project is a Flutter application that demonstrates the use of biometric aut
 - Simple and intuitive user interface with a centered button.
 - Feedback message ("Nda bisa") for unsuccessful biometric authentication.
 
-## Screenshots
-
-Include screenshots or gifs of your application here.
-
 ## Getting Started
 
 ### Prerequisites
