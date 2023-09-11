@@ -1,4 +1,5 @@
 import 'package:biometric_auth/screens/SecondScreen.dart';
+import 'package:biometric_auth/screens/LoginScreen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,6 +53,10 @@ class _MyAppState extends State<MyApp> {
                                 builder: (context) => SecondScreen()));
                       } else {
                         Fluttertoast.showToast(msg: "nda bisa");
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()));
                       }
                     },
                     child: const Text('Login')),
@@ -73,7 +78,7 @@ class _MyAppState extends State<MyApp> {
         ),
       );
       return authenticated;
-      print("Authenticated : $authenticated");
+      //print("Authenticated : $authenticated");
     } on PlatformException catch (e) {
       print(e);
       return false;
