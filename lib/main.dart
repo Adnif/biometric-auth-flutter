@@ -77,6 +77,7 @@ class _MyAppState extends State<MyApp> {
           biometricOnly: true,
         ),
       );
+      print(authenticated);
       return authenticated;
       //print("Authenticated : $authenticated");
     } on PlatformException catch (e) {
