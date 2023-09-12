@@ -1,13 +1,18 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:biometric_auth/constants/appwrite_constants.dart';
 
-Client client = Client()
-    .setEndpoint('https://cloud.appwrite.io/v1') // Your Appwrite Endpoint
-    .setProject('[PROJECT_ID]'); // Your project ID
+void checkList() {
+  Client client = Client();
+  Databases databases = Databases(client);
 
-Account account = Account(client);
+  client.setEndpoint(appw.endpoint).setProject(appw.projectID);
 
-final user = account.create(
-    userId: ID.unique(),
-    email: 'me@appwrite.io',
-    password: 'password',
-    name: 'My Name');
+  Future result = databases.listDocuments(
+      databaseId: appw.databaseID, collectionId: appw.collectionID);
+
+  result.then((response) {
+    print(response);
+  }).catchError((error) {
+    print(error.response);
+  });
+}

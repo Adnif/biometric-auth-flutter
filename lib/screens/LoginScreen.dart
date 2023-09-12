@@ -1,3 +1,4 @@
+import 'package:biometric_auth/api/test_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,7 +30,9 @@ class LoginScreen extends ConsumerWidget {
               ),
               ElevatedButton(
                 child: Text('Login'),
-                onPressed: () {},
+                onPressed: () {
+                  checkList();
+                },
               )
             ],
           ),
