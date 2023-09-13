@@ -1,5 +1,6 @@
 import 'package:biometric_auth/screens/SecondScreen.dart';
 import 'package:biometric_auth/screens/LoginScreen.dart';
+import 'package:biometric_auth/screens/SignUpScreen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,6 +61,14 @@ class _MyAppState extends State<MyApp> {
                       }
                     },
                     child: const Text('Login')),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignUpScreen()));
+                    },
+                    child: const Text('Sign Up')),
               ],
             ),
           ),
