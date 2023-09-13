@@ -17,7 +17,6 @@ const login = (req, res) => {
         if(error) throw error;
         res.status(200).json(results.rows);
     });
-
 }
 
 module.exports = {
