@@ -35,16 +35,14 @@ const signUp = async (req, res) => {
 
     try {
         const results = await pool.query(emailQuery);
-
         const isUserExists = results.rows.length > 0;
 
         if (isUserExists) {
             res.status(409).send('Username or email already exists.');
         } else {
             const signUpQuery = `INSERT INTO users (username, password, email, device_id) VALUES ('${username}', '${password}', '${email}', '${device_id}')`;
-
+            
             await pool.query(signUpQuery);
-
             res.status(201).send('User created successfully.');
         }
     } catch (error) {
