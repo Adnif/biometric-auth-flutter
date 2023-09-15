@@ -1,13 +1,14 @@
 import 'package:biometric_auth/screens/SecondScreen.dart';
 import 'package:biometric_auth/screens/LoginScreen.dart';
 import 'package:biometric_auth/screens/SignUpScreen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
