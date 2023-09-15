@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.2.0-15.0.dev <4.0.0'
 
 dependencies:
+  device_info_plus: ^9.0.3
   email_validator: ^2.1.17
   flutter:
     sdk: flutter
