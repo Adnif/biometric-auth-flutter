@@ -1,5 +1,6 @@
 const pool = require('../../db');
-
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const getUsers = (req, res) => {
     pool.query("SELECT * FROM users", (error, results) => {
@@ -21,8 +22,14 @@ const login = (req, res) => {
             return;
         }
 
+        const username = results.rows[0]['username'];
+        const user = { name: username }
+
+
         //res.status(200).json(results.rows);
-        res.status(200).json(results.rows[0]);
+        //res.status(200).json(results.rows[0]["username"]);
+        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+        res.status(200).json({ accessToken: accessToken})
     });
 }
 
