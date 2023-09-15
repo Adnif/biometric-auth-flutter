@@ -1,4 +1,5 @@
 import 'package:biometric_auth/providers/auth_provider.dart';
+import 'package:biometric_auth/providers/device_info_provider.dart';
 import 'package:biometric_auth/providers/models.dart';
 import 'package:biometric_auth/screens/SecondScreen.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +13,22 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final deviceInfo = ref.watch(deviceInfoProvider);
     return Scaffold(
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              //SvgPicture.asset("assets/logo.svg"),
+              Text(
+                deviceInfo.when(
+                  data: (data) => data, // Display device info here
+                  loading: () =>
+                      'Loading...', // Show loading text while waiting
+                  error: (error, stackTrace) =>
+                      'Error: $error', // Show error message if any
+                ),
+              ),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(

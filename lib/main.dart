@@ -1,6 +1,7 @@
 import 'package:biometric_auth/screens/SecondScreen.dart';
 import 'package:biometric_auth/screens/LoginScreen.dart';
 import 'package:biometric_auth/screens/SignUpScreen.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
@@ -104,5 +105,12 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) {
       return;
     }
+  }
+
+  Future<AndroidDeviceInfo> _getDeviceInfo() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+
+    return androidInfo;
   }
 }
