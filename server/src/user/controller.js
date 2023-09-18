@@ -12,6 +12,7 @@ const getUsers = (req, res) => {
 const login = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
+    const curr_device_id = req.body.device_id;
     
     const sql = `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;
     pool.query(sql, (error, results) => {
@@ -20,16 +21,22 @@ const login = (req, res) => {
         if(results.rows.length === 0){
             res.status(409).send('Wrong Credentials');
             return;
+        } else {
+            const username = results.rows[0]['username'];
+            const device_id = results.rows[0]['device_id'];
+
+            if(curr_device_id !== device_id){
+                const updateSql = `UPDATE users SET device_id = '${curr_device_id}' WHERE email = '${email}'`;
+                pool.query(updateSql, (updateError, updateResults) => {
+                    if (updateError) throw updateError;
+                    console.log(`Device ID updated for user: ${username}`);
+                });
+            }
+
+            const user = { name: username, device_id: curr_device_id}
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+            res.status(200).json({ accessToken: accessToken})
         }
-
-        const username = results.rows[0]['username'];
-        const user = { name: username }
-
-
-        //res.status(200).json(results.rows);
-        //res.status(200).json(results.rows[0]["username"]);
-        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-        res.status(200).json({ accessToken: accessToken})
     });
 }
 
@@ -58,9 +65,18 @@ const signUp = async (req, res) => {
     }
 }
 
+const getDeviceId = async (req,res) => {
+    //const username = req.user.username;
+    const sql = `SELECT device_id FROM users WHERE email = 'bani@email.com'`;
+    pool.query(sql, (error, results) => {
+        if(error) throw error;
+        res.json({ device_id: results.rows[0]['device_id'] })
+    })
+}
 
 module.exports = {
     getUsers,
     login,
-    signUp
+    signUp,
+    getDeviceId,
 };
