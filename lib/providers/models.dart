@@ -4,9 +4,10 @@ import 'dart:convert';
 class LoginCredentials {
   String email;
   String password;
-  String device_id = 'XXX';
+  String device_id;
 
-  LoginCredentials({required this.email, required this.password, device_id});
+  LoginCredentials(
+      {required this.email, required this.password, required this.device_id});
 }
 
 class SignUpCredentials extends LoginCredentials {

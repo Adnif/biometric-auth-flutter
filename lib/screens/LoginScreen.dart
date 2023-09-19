@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class LoginScreen extends ConsumerWidget {
   final TextEditingController emailController = TextEditingController();
@@ -14,21 +15,22 @@ class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deviceInfo = ref.watch(deviceInfoProvider);
+    final String deviceId = deviceInfo.when(
+      data: (data) {
+        //device_id = data;
+        return data;
+      }, // Display device info here
+      loading: () => 'Loading...', // Show loading text while waiting
+      error: (error, stackTrace) => 'Error: $error',
+    );
+
     return Scaffold(
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Text(
-                deviceInfo.when(
-                  data: (data) => data, // Display device info here
-                  loading: () =>
-                      'Loading...', // Show loading text while waiting
-                  error: (error, stackTrace) =>
-                      'Error: $error', // Show error message if any
-                ),
-              ),
+              Text(deviceId),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
@@ -46,7 +48,8 @@ class LoginScreen extends ConsumerWidget {
                 onPressed: () async {
                   final cred = await ref.read(loginProvider(LoginCredentials(
                           email: emailController.text,
-                          password: passwordController.text))
+                          password: passwordController.text,
+                          device_id: deviceId))
                       .future);
                   if (cred == '200') {
                     await Navigator.push(

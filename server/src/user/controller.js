@@ -66,11 +66,12 @@ const signUp = async (req, res) => {
 }
 
 const getDeviceId = async (req,res) => {
-    //const username = req.user.username;
-    const sql = `SELECT device_id FROM users WHERE email = 'bani@email.com'`;
+    const username = req.user.name;
+    console.log(username);
+    const sql = `SELECT device_id FROM users WHERE username = '${username}'`;
     pool.query(sql, (error, results) => {
         if(error) throw error;
-        res.json({ device_id: results.rows[0]['device_id'] })
+        res.json(results.rows[0]["device_id"])
     })
 }
 

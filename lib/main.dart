@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:biometric_auth/screens/SecondScreen.dart';
 import 'package:biometric_auth/screens/LoginScreen.dart';
 import 'package:biometric_auth/screens/SignUpScreen.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +23,18 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _canAuthenticate = false;
   late final LocalAuthentication auth;
+  late IO.Socket socket = IO.io('http://10.0.2.2:3000',
+      IO.OptionBuilder().setTransports(['websocket']).build());
+
+  _connectSocket() {
+    socket.onConnect((data) => print('Connection Established'));
+    socket.onConnectError((data) => print('Connect Error $data'));
+    socket.onDisconnect((data) => print('Socket.IO server disconnected'));
+  }
+
+  _getData() {
+    socket.emit('data', (data) => {print(JsonDecoder(data))});
+  }
 
   @override
   void initState() {
@@ -29,6 +44,8 @@ class _MyAppState extends State<MyApp> {
           _canAuthenticate = isSupported;
         }));
     _getAvailableBiometrics();
+    _connectSocket();
+    _getData();
   }
 
   @override
