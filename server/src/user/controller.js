@@ -35,7 +35,7 @@ const login = (req, res) => {
 
             const user = { name: username, device_id: curr_device_id}
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-            res.status(200).json({ accessToken: accessToken})
+            res.status(200).json({ 'access-token': accessToken})
         }
     });
 }

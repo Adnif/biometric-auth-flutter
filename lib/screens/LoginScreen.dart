@@ -1,3 +1,4 @@
+import 'package:biometric_auth/main.dart';
 import 'package:biometric_auth/providers/auth_provider.dart';
 import 'package:biometric_auth/providers/device_info_provider.dart';
 import 'package:biometric_auth/providers/models.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class LoginScreen extends ConsumerWidget {
@@ -51,7 +53,17 @@ class LoginScreen extends ConsumerWidget {
                           password: passwordController.text,
                           device_id: deviceId))
                       .future);
-                  if (cred == '200') {
+                  print('token pas login: ${cred.token}');
+                  if (cred.statusCode == '200') {
+                    authcred.statusCode = cred.statusCode;
+                    authcred.token = cred.token;
+                    print(
+                        'auth cred token setelah diassign; ${authcred.token}');
+
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.setString('token', authcred.token!);
+
                     await Navigator.push(
                         context,
                         MaterialPageRoute(

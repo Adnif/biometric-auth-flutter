@@ -1,11 +1,12 @@
 import 'dart:convert';
 
+import 'package:biometric_auth/main.dart';
 import 'package:biometric_auth/providers/models.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final loginProvider =
-    FutureProvider.family<String, LoginCredentials>((ref, log) async {
+    FutureProvider.family<LoginResults, LoginCredentials>((ref, log) async {
   final response = await http.post(
       Uri.parse('http://10.0.2.2:3000/api/v1/user/login'),
       headers: {'Content-Type': 'application/json'},
@@ -19,9 +20,15 @@ final loginProvider =
 
   if (response.statusCode == 200) {
     print(response.body);
-    return response.statusCode.toString();
+    Map<String, dynamic> data = json.decode(response.body);
+    authcred.token = data['access-token'];
+    authcred.statusCode = response.statusCode.toString();
+    return authcred;
   } else {
     print(response.statusCode);
-    return response.statusCode.toString();
+    authcred.statusCode = response.statusCode.toString();
+    return authcred;
   }
 });
+
+final deviceIdProvider = StreamProvider((ref) async* {});

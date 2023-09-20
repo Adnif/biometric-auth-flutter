@@ -1,16 +1,22 @@
 import 'dart:convert';
-
+import 'dart:async';
+import 'package:biometric_auth/providers/auth_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:biometric_auth/providers/models.dart';
 import 'package:biometric_auth/screens/SecondScreen.dart';
 import 'package:biometric_auth/screens/LoginScreen.dart';
 import 'package:biometric_auth/screens/SignUpScreen.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
+LoginResults authcred =
+    new LoginResults(token: null, statusCode: null, device_id: null);
 void main() {
   runApp(ProviderScope(child: MyApp()));
 }
@@ -32,8 +38,35 @@ class _MyAppState extends State<MyApp> {
     socket.onDisconnect((data) => print('Socket.IO server disconnected'));
   }
 
-  _getData() {
-    socket.emit('data', (data) => {print(JsonDecoder(data))});
+  void _getData() async {
+    socket.emit('data');
+    socket.on('data', (data) {
+      authcred.device_id = data;
+    });
+
+    final info = await DeviceInfoPlugin().androidInfo;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final currId = info.id;
+    if (currId != authcred.device_id) {
+      authcred.token = null;
+      await prefs.remove('token');
+    }
+    print('token sekarang: ${authcred.token}');
+    print('device id sekarang: ${currId}');
+    print('device id database sekarang: ${authcred.device_id}');
+  }
+
+  void checkToken(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('token') != null) {
+      authcred.token = prefs.getString('token');
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SecondScreen(),
+          ));
+    }
   }
 
   @override
@@ -45,18 +78,32 @@ class _MyAppState extends State<MyApp> {
         }));
     _getAvailableBiometrics();
     _connectSocket();
-    _getData();
+
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      _getData();
+    });
+
+    //_getData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    socket.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('ini didalam build ${authcred.device_id}');
     return MaterialApp(
       home: Builder(builder: (context) {
+        checkToken(context);
         return Scaffold(
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text(authcred.device_id == null ? 'null' : authcred.device_id!),
                 Text(
                   _canAuthenticate
                       ? "Can authenticate biometrics"

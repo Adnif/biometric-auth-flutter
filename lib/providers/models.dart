@@ -10,6 +10,15 @@ class LoginCredentials {
       {required this.email, required this.password, required this.device_id});
 }
 
+class LoginResults {
+  String? token;
+  String? statusCode;
+  String? device_id;
+
+  LoginResults(
+      {required this.token, required this.statusCode, required this.device_id});
+}
+
 class SignUpCredentials extends LoginCredentials {
   String username;
 
