@@ -20,7 +20,7 @@ class LoginScreen extends ConsumerWidget {
     final String deviceId = deviceInfo.when(
       data: (data) {
         //device_id = data;
-        return data;
+        return data!;
       }, // Display device info here
       loading: () => 'Loading...', // Show loading text while waiting
       error: (error, stackTrace) => 'Error: $error',

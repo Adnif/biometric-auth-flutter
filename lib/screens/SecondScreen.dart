@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:android_id/android_id.dart';
 import 'package:biometric_auth/main.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,12 @@ class _SecondScreenState extends State<SecondScreen> {
 
   void checkDevice() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final info = await DeviceInfoPlugin().androidInfo;
-    final currId = info.id;
+
+    const _androidIdPlugin = AndroidId();
+    final String? androidId = await _androidIdPlugin.getId();
+
+    // final info = await DeviceInfoPlugin().androidInfo;
+    final currId = androidId;
 
     if (currId != authcred.device_id) {
       Fluttertoast.showToast(msg: 'Akun telah login di device lain');

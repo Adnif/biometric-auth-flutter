@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:android_id/android_id.dart';
 import 'package:biometric_auth/providers/auth_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:biometric_auth/providers/models.dart';
@@ -44,10 +45,12 @@ class _MyAppState extends State<MyApp> {
       authcred.device_id = data;
     });
 
-    final info = await DeviceInfoPlugin().androidInfo;
+    const _androidIdPlugin = AndroidId();
+    final String? androidId = await _androidIdPlugin.getId();
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final currId = info.id;
+    final currId = androidId;
     if (currId != authcred.device_id) {
       authcred.token = null;
       await prefs.remove('token');
