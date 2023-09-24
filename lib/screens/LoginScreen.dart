@@ -57,12 +57,14 @@ class LoginScreen extends ConsumerWidget {
                   if (cred.statusCode == '200') {
                     authcred.statusCode = cred.statusCode;
                     authcred.token = cred.token;
+                    authcred.username = cred.username;
                     print(
                         'auth cred token setelah diassign; ${authcred.token}');
 
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     await prefs.setString('token', authcred.token!);
+                    await prefs.setString('username', authcred.username!);
 
                     await Navigator.push(
                         context,

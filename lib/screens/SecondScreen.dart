@@ -26,6 +26,7 @@ class _SecondScreenState extends State<SecondScreen> {
     final currId = androidId;
 
     if (currId != authcred.device_id) {
+      await prefs.remove('token');
       Fluttertoast.showToast(msg: 'Akun telah login di device lain');
       Navigator.pushReplacement(
           context,

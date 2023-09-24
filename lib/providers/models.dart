@@ -14,9 +14,13 @@ class LoginResults {
   String? token;
   String? statusCode;
   String? device_id;
+  String? username;
 
   LoginResults(
-      {required this.token, required this.statusCode, required this.device_id});
+      {required this.token,
+      required this.statusCode,
+      required this.device_id,
+      required this.username});
 }
 
 class SignUpCredentials extends LoginCredentials {
