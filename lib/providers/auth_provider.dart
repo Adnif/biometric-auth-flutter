@@ -21,7 +21,9 @@ final loginProvider =
   if (response.statusCode == 200) {
     print(response.body);
     Map<String, dynamic> data = json.decode(response.body);
+    //LoginResults authServe = new LoginResults(token: token, statusCode: statusCode, device_id: device_id, username: username)
     authcred.token = data['access-token'];
+    authcred.username = data['username'];
     authcred.statusCode = response.statusCode.toString();
     return authcred;
   } else {

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:android_id/android_id.dart';
 import 'package:biometric_auth/providers/auth_provider.dart';
+import 'package:biometric_auth/screens/LoggedScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:biometric_auth/providers/models.dart';
 import 'package:biometric_auth/screens/SecondScreen.dart';
@@ -16,8 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
-LoginResults authcred =
-    new LoginResults(token: null, statusCode: null, device_id: null);
+LoginResults authcred = new LoginResults(
+    token: null, statusCode: null, device_id: null, username: null);
 void main() {
   runApp(ProviderScope(child: MyApp()));
 }
@@ -40,15 +41,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _getData() async {
-    socket.emit('data');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? usn = prefs.getString('username');
+    print("ini dalam fungsi getData : $usn");
+
+    socket.emit('data', usn);
     socket.on('data', (data) {
       authcred.device_id = data;
     });
 
     const _androidIdPlugin = AndroidId();
     final String? androidId = await _androidIdPlugin.getId();
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final currId = androidId;
     if (currId != authcred.device_id) {
@@ -58,6 +61,7 @@ class _MyAppState extends State<MyApp> {
     print('token sekarang: ${authcred.token}');
     print('device id sekarang: ${currId}');
     print('device id database sekarang: ${authcred.device_id}');
+    print('username database sekarang: ${authcred.username}');
   }
 
   void checkToken(BuildContext context) async {
@@ -67,7 +71,7 @@ class _MyAppState extends State<MyApp> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => SecondScreen(),
+            builder: (context) => LoggedScreen(),
           ));
     }
   }
@@ -115,19 +119,11 @@ class _MyAppState extends State<MyApp> {
                 ),
                 ElevatedButton(
                     onPressed: () async {
-                      bool passed = await _authenticate();
-                      if (passed == true) {
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SecondScreen()));
-                      } else {
-                        Fluttertoast.showToast(msg: "nda bisa");
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen()));
-                      }
+                      //Fluttertoast.showToast(msg: "nda bisa");
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
                     },
                     child: const Text('Login')),
                 ElevatedButton(

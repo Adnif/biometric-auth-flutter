@@ -8,15 +8,20 @@ function webSocket(server) {
         console.log('a user connected');
 
         socket.on('data', (data) => {
-            const query = `SELECT * FROM users WHERE username = 'bani'`;
+            
+            const query = `SELECT * FROM users WHERE username = '${data}'`;
             pool.query(query, (error, result) => {
                 if (error) {
+                    console.error(`$data`);
                     console.error('Error executing query', error);
-                    return;
+                    socket.emit('data', error);
+                } else if(result.rows[0]){
+                    console.log('Result:', result.rows[0]["device_id"]);
+                    // Emit data to the connected client
+                    socket.emit('data', result.rows[0]["device_id"]);
+                } else {
+                    socket.emit('data', "gaada usernamenya");
                 }
-                console.log('Result:', result.rows[0]["device_id"]);
-                // Emit data to the connected client
-                socket.emit('data', result.rows[0]["device_id"]);
             });
             
         })
